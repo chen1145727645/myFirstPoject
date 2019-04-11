@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<!--声明使用Thymeleaf-->
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>fileuploadTest</title>
+</head>
+<body>
+   <form action="fileuploadTest" method="post" enctype="multipart/form-data">
+       <input type="file" name="file"/>
+       <input type="submit" value="文件上传"/>
+   </form>
+<a href="/spring-mybatis/downloadFile">下载</a>
+   <!--如果有值，则替换-->
+   <p th:text=" ${user.name}">3333</p>
+</body>
+</html>

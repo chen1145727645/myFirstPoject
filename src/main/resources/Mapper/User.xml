@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.UserInfoMapper">
+    <!--获取所有的用户信息-->
+    <resultMap id="queryMap" type="com.qf.Entity.User">
+        <id property="id" column="userid"></id>
+        <result property="username" column="username"></result>
+        <result property="password" column="password"></result>
+        <result property="email" column="email"></result>
+        <!--<collection property="roleList" ofType="com.qf.Entity.role">-->
+            <!--<id property="roleid" column="roleid"></id>-->
+            <!--<result property="rolename" column="rolename"></result>-->
+        <!--</collection>-->
+    </resultMap>
+
+     <select id="queryAll" resultMap="queryMap" parameterType="int">
+       select *from user
+        where userid=#{userid}
+     </select>
+
+    <!--新增一个用户-->
+    <insert id="insertInfo" parameterType="com.qf.Entity.User">
+        insert into user(username,name,email)values (#{username},#{name},#{email})
+    </insert>
+
+    <resultMap id="userall" type="com.qf.Entity.User">
+        <id column="userid" property="id"></id>
+    </resultMap>
+    <!--分页查询用户表-->
+    <select id="query"  resultMap="userall" parameterType="java.lang.String">
+       select *from user
+       <where>
+           <if test="_parameter!=null and _parameter!=''">
+               username=#{_parameter} and
+           </if>
+           stuas=1
+       </where>
+     </select>
+
+    <!--登录验证-->
+    <select id="checklogin" resultType="com.qf.Entity.User" parameterType="com.qf.Entity.User">
+       select *from user where username=#{username} and password=#{password} and stuas=1
+     </select>
+
+    <!--删除-->
+    <update id="deleteUser" parameterType="int">
+        update user set stuas=0 where userid=#{userid}
+    </update>
+
+    <!--修改-->
+    <update id="updateUser" parameterType="com.qf.Entity.User">
+        update user
+        <set>
+            <if test="username!=null and username!=''">
+                username=#{username},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+
+            <if test="email!=null and email!=''">
+                email=#{email}
+            </if>
+        </set>
+        where userid=#{id}
+    </update>
+
+    <!--批量删除(必须写全名)-->
+    <update id="deleteUserBatch" parameterType="java.util.List">
+        update user
+        <set>
+            stuas=0
+        </set>
+        <where>
+            <foreach collection="list" item="id" open="userid in (" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </update>
+
+    <!--获取角色信息-->
+    <select id="getrolenamebyuserid" parameterType="com.qf.vo.userInfoVo" resultType="com.qf.dto.RoleInfoDto">
+        SELECT r.rolename,r.roleid from user_role ur INNER JOIN role r on ur.roleid=r.roleid
+        where userid=(SELECT userid FROM `user` where username=#{username} and `password`=#{password})
+        AND stuas=1
+    </select>
+</mapper>

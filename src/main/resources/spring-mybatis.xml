@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <!-- 1、配置加载数据源参数文件(数据库配置方面的用户名、密码等) -->
+    <context:property-placeholder location="classpath:database.properties" />
+    <!-- 2、配置数据源连接池 使用Alibaba德鲁伊连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${driver}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${user}"></property>
+        <property name="password" value="${password}"></property>
+    </bean>
+    <!-- 3、配置sessionFactoryBean,把sessionFactory交由spring管理
+      可以将当前配置看成是mybatis的主配置文件，在mybatis中也要引入mapper.xml资源文件，
+      别名、数据库配置等信息，然后被sessionFactoryBulider加载创建sqlsession.
+    -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--引入连接池（创建sqlsession和数据库连接需要知道数据库的配置信息）-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--注入mapper-->
+        <property name="mapperLocations" value="classpath:Mapper/*.xml"></property>
+         <!--引入分页插件-->
+        <property name="configLocation" value="classpath:mybatis-page.xml"></property>
+        <!--<property name="typeAliasesPackage" value="com.qf.Entity"></property>-->
+    </bean>
+    <!-- 4、配置mybatis接口扫描器 （这可以看成是一个完整的mybatis）-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--将mybatis接口开发交由spring管理-->
+        <property name="basePackage" value="com.qf.mapper"></property>
+        <!--这个是上面已经配置好的sqlSessionFactoryBean-->
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+    </bean>
+    <!-- 5、配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--引入数据源（事务的管理可能跟数据库相关，所以要陪数据库的相关信息）-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--可以看成是一个通知-->
+    <!-- 注解配置事务扩散机制 -->
+    <!--<tx:annotation-driven transaction-manager="transactionManager" />-->
+    <!--xml配置事务扩散机制 事务交由spring aop管理（配置事务通知）-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--
+            isolation:隔离级别(序列化(最高级别)、读已提交、读未提交、可重复读)
+            这里的default使用的就是当前使用数据库的默认事务隔离级别
+            propagation:传播行为 REQUIRED（spring默认）：如果当前没有事务，就创建一个新事务，
+            如果当前存在事务，就加入该事务，该设置是最常用的设置
+            假设有A、B两个方法，如果A发生了异常，则B执行也不会成功，原因是同属于一个事务。
+            -->
+            <tx:method name="delete*" isolation="DEFAULT"  propagation="REQUIRED" />
+            <tx:method name="insert*" isolation="DEFAULT" propagation="REQUIRED" />
+            <tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" />
+            <!--设置为只读-->
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--spring aop切点和切面配置-->
+    <!--这里已经不需要我们配置切面类了，只要将service层作为代理层，
+    那么spring会根据使用的方法名称和切点自动去选择相应的通知切入-->
+    <aop:config>
+        <aop:pointcut expression="execution(* com.qf.service.*.*(..))" id="serviceCutPoint"/>
+        <!--在事务环境中，一般使用advisor-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceCutPoint"/>
+        <!--在日志环境中，一般使用aspect-->
+        <!--<aop:aspect></aop:aspect>-->
+    </aop:config>
+</beans>

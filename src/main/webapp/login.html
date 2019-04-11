@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<meta name="description" content="">-->
+    <!--<meta name="keys" content="">-->
+    <!--<meta name="author" content="">-->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/drag.css"/>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <div><a class="navbar-brand" href="index.html" style="font-size:32px;">千峰-创意产品众筹平台</a></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <form class="form-signin" role="form" id="loginform">
+        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-user"></i> 用户登录</h2>
+        <div class="form-group has-success has-feedback">
+            <input type="text" class="form-control"  id="username" name="username" placeholder="请输入登录账号" required="required"/>
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-success has-feedback">
+            <input type="text" class="form-control" id="password" name="password" placeholder="请输入登录密码" required="required" style="margin-top:10px;"/>
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-success has-feedback">
+            <select class="form-control" id="sel">
+                <!--<option value="member">会员</option>-->
+                <!--<option value="user">管理</option>-->
+            </select>
+        </div>
+         <!--拖动条容器-->
+        <div id="dragContainer">
+            <!--拖动过程的颜色-->
+            <div id="dragBg"></div>
+            <!--验证文本-->
+            <div id="dragText"></div>
+            <!--滑块-->
+            <div id="dragHandler"class="dragHandlerBg"></div>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> 记住我
+            </label>
+            <br>
+            <label>
+                忘记密码
+            </label>
+            <label style="float:right">
+                <a href="reg.html">我要注册</a>
+            </label>
+        </div>
+        <input type="submit" id="btnbylogin" class="btn btn-lg btn-block" disabled="disabled" style="background-color: silver" value="登录"/>
+    </form>
+</div>
+<script src="jquery/jquery-3.1.1.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<!--引入jquery validation的支持-->
+<script src="jquery/jquery.validate.js"></script>
+<script>
+
+    $(function (){
+        //添加验证信息
+        $("#loginform").validate({
+            //验证规则
+            rules:{
+                //这里的名字一定要和input的一样
+                username:{
+                    //最小长度2，最大长度10
+                    minlength: 2,
+                    maxlength: 10
+                },
+                password:{
+                    minlength: 2,
+                    maxlength: 10
+                }
+            },
+            //这里只能使用submit
+            submitHandler: function(form) { //验证成功时调用
+                //ajax请求后台登录
+               dologin();
+            },
+            invalidHandler: function(form, validator) {//不通过回调
+                alert('验证不通过');
+                //表单重置
+                $("#from")[0].reset()
+                return false;
+            }
+        });
+        //中文提示
+        $.extend($.validator.messages, {
+            required: "这是必填字段",
+            remote: "请修正此字段",
+            email: "请输入有效的电子邮件地址",
+            url: "请输入有效的网址",
+            date: "请输入有效的日期",
+            dateISO: "请输入有效的日期 (YYYY-MM-DD)",
+            number: "请输入有效的数字",
+            digits: "只能输入数字",
+            creditcard: "请输入有效的信用卡号码",
+            equalTo: "你的输入不相同",
+            extension: "请输入有效的后缀",
+            maxlength: $.validator.format("最多可以输入 {0} 个字符"),
+            minlength: $.validator.format("最少要输入 {0} 个字符"),
+            rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的字符串"),
+            range: $.validator.format("请输入范围在 {0} 到 {1} 之间的数值"),
+            max: $.validator.format("请输入不大于 {0} 的数值"),
+            min: $.validator.format("请输入不小于 {0} 的数值")
+        });
+        //初始化滑块。
+        initmydrag();
+        //这里由于设置了用户名不为一，导致多个用户名。只能用这种方式区分
+        //获取当前输入用户所拥有的角色
+        //根据用户名和密码请求角色信息
+        $("#password").blur(function () {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username.trim() != "" && username != null) {
+                if (password.trim() != "" && password != null) {
+                    //通过ajax请求获取角色
+                    $.ajax({
+                        type: 'POST',
+                        url: 'getrolenamebyuserid',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            "username": username,
+                            "password": password
+                        }),
+                        success: function (responseText){
+                            var sel = $("#sel");
+                            $(responseText).each(function (index,item) {
+                                var element = document.createElement("option");
+                                element.setAttribute("value",item.roleid)
+                                element.text=item.rolename;
+                                sel.append(element)
+                            });
+                        },
+                        error: function (message) {
+                            console.log(message);
+                        },
+                        dataType: 'json'
+                    });
+                }
+            }
+        });
+    });
+        function dologin(){
+            $.ajax({
+                type: 'POST',
+                url: 'loginCheck',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "username": $("#username").val(),
+                    "password": $("#password").val()
+                }),
+                success: function (responseText){
+                    console.log(responseText);
+                    if (responseText == true){
+                        //将角色id发生到main页面，main初始是根据roleid去获取相应的菜单项
+                        var roleid=$('#sel option:selected') .val();
+                        window.location.href = "main.html?roleid="+roleid;
+                    } else{
+                        alert("用户名或密码错误");
+                    }
+                },
+                error: function (message) {
+                    console.log(message);
+                },
+                dataType: 'json'
+            });
+        }
+        function initmydrag() {
+        //获取容器节点
+        var dragContainer = document.getElementById("dragContainer");
+        //获取拖动过程的颜色节点
+        var dragBg = document.getElementById("dragBg");
+        //获取文本节点
+        var dragText = document.getElementById("dragText");
+        //获取滑块节点
+        var dragHandler = document.getElementById("dragHandler");
+
+        //滑块最大偏移量(clientWidth:获取当前元素的宽度)
+        //容器的宽度-滑块的宽度=滑块能滑动的距离
+        var maxHandlerOffset = dragContainer.clientWidth - dragHandler.clientWidth;
+        //初始化
+        initDrag();
+        function initDrag() {
+            //设置初始文本信息
+            dragText.textContent = "拖动滑块验证";
+            /*为滑块添加点击事件（事件名称，调用的方法）
+            mousedown:只需要按下即可触发（click需要按下并松开才可触发）
+            touchstart：触摸事件（当手指触摸到的时候触发，一般用于手机和平板电脑）
+             **/
+            dragHandler.addEventListener("mousedown", onDragHandlerMouseDown);
+
+            //dragHandler.addEventListener("touchstart", onDragHandlerMouseDown);
+        }
+        //事件参数event
+        function onDragHandlerMouseDown(event){
+            //鼠标指针在指定的元素中移动时，就会发生 mousemove 事件
+            document.addEventListener("mousemove", onDragHandlerMouseMove);
+            //鼠标离开时触发事件
+            document.addEventListener("mouseup", onDragHandlerMouseUp);
+        }
+        function onDragHandlerMouseMove(event) {
+            //event.clientX：鼠标移动的坐标
+            //当前鼠标的横坐标(当前滑块初始的横坐标event.clientX大概是800多左右，必须要让它既大于0又必须小于最大值，才能滑动，要不然一触发事件就验证完了)
+            var left = event.clientX-600 - dragHandler.clientWidth/2;
+            if(left < 0){
+                left = 0;
+            } else if(left > maxHandlerOffset) {
+                left = maxHandlerOffset;
+                //验证成功
+                verifySucc();
+            }
+            //滑块的坐标位置
+            dragHandler.style.left = left + "px";
+            //背景颜色的长度
+            dragBg.style.width = dragHandler.style.left;
+        }
+        //当鼠标离开时调用，清除事件并将滑块和移动的颜色归位
+        function onDragHandlerMouseUp(event) {
+            document.removeEventListener("mousemove", onDragHandlerMouseMove);
+            document.removeEventListener("mouseup", onDragHandlerMouseUp);
+            dragHandler.style.left = 0;
+            dragBg.style.width = 0;
+        }
+        //验证成功
+        function verifySucc(){
+            isVertifySucc = true;
+            //success信息
+            dragText.textContent = "验证通过";
+            //颜色设置
+            dragText.style.color = "wheat";
+            //设置验证成功的属性
+            dragHandler.setAttribute("class", "dragHandlerOkBg");
+            //清空鼠标事件
+            dragHandler.removeEventListener("mousedown", onDragHandlerMouseDown);
+            document.removeEventListener("mousemove", onDragHandlerMouseMove);
+            document.removeEventListener("mouseup", onDragHandlerMouseUp);
+
+            //
+            var btn = $("#btnbylogin");
+            //移除原来的灰色背景
+            btn.removeAttr("style");
+            //添加成功的背景
+            btn.addClass("btn-success");
+            //设置为可用
+            btn.removeAttr("disabled");
+        };
+        if(window.parent != window){// 如果是在框架中
+            //就让框架页面跳转到登陆页面
+            window.parent.location.href = "login.html";
+        }
+    }
+</script>
+</body>
+</html>

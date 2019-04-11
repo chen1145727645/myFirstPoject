@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/main.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	table tbody tr:nth-child(odd){background:#F4F4F4;}
+	table tbody td:nth-child(even){color:#C00;}
+	</style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <div><a class="navbar-brand" style="font-size:32px;" href="#">众筹平台 - 角色维护</a></div>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li style="padding-top:8px;">
+				<div class="btn-group">
+				  <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
+					<i class="glyphicon glyphicon-user"></i> 张三 <span class="caret"></span>
+				  </button>
+					  <ul class="dropdown-menu" role="menu">
+						<li><a href="#"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
+						<li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
+						<li class="divider"></li>
+						<li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
+					  </ul>
+			    </div>
+			</li>
+            <li style="margin-left:10px;padding-top:8px;">
+				<button type="button" class="btn btn-default btn-danger">
+				  <span class="glyphicon glyphicon-question-sign"></span> 帮助
+				</button>
+			</li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+			<div class="tree">
+				<ul style="padding-left:0px;" class="list-group">
+					<li class="list-group-item tree-closed" >
+						<a href="main.html"><i class="glyphicon glyphicon-dashboard"></i> 控制面板</a> 
+					</li>
+					<li class="list-group-item">
+						<span><i class="glyphicon glyphicon glyphicon-tasks"></i> 权限管理 <span class="badge" style="float:right">3</span></span> 
+						<ul style="margin-top:10px;">
+							<li style="height:30px;">
+								<a href="user.html"><i class="glyphicon glyphicon-user"></i> 用户维护</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="role.html" style="color:red;"><i class="glyphicon glyphicon-king"></i> 角色维护</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="permission.html"><i class="glyphicon glyphicon-lock"></i> 许可维护</a> 
+							</li>
+						</ul>
+					</li>
+					<li class="list-group-item tree-closed">
+						<span><i class="glyphicon glyphicon-ok"></i> 业务审核 <span class="badge" style="float:right">3</span></span> 
+						<ul style="margin-top:10px;display:none;">
+							<li style="height:30px;">
+								<a href="auth_cert.html"><i class="glyphicon glyphicon-check"></i> 实名认证审核</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="auth_adv.html"><i class="glyphicon glyphicon-check"></i> 广告审核</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="auth_project.html"><i class="glyphicon glyphicon-check"></i> 项目审核</a> 
+							</li>
+						</ul>
+					</li>
+					<li class="list-group-item tree-closed">
+						<span><i class="glyphicon glyphicon-th-large"></i> 业务管理 <span class="badge" style="float:right">7</span></span> 
+						<ul style="margin-top:10px;display:none;">
+							<li style="height:30px;">
+								<a href="cert.html"><i class="glyphicon glyphicon-picture"></i> 资质维护</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="type.html"><i class="glyphicon glyphicon-equalizer"></i> 分类管理</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="process.html"><i class="glyphicon glyphicon-random"></i> 流程管理</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="advertisement.html"><i class="glyphicon glyphicon-hdd"></i> 广告管理</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="message.html"><i class="glyphicon glyphicon-comment"></i> 消息模板</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="project_type.html"><i class="glyphicon glyphicon-list"></i> 项目分类</a> 
+							</li>
+							<li style="height:30px;">
+								<a href="tag.html"><i class="glyphicon glyphicon-tags"></i> 项目标签</a> 
+							</li>
+						</ul>
+					</li>
+					<li class="list-group-item tree-closed" >
+						<a href="param.html"><i class="glyphicon glyphicon-list-alt"></i> 参数管理</a> 
+					</li>
+				</ul>
+			</div>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+				<h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 数据列表</h3>
+			  </div>
+			  <div class="panel-body">
+<form class="form-inline" role="form" style="float:left;">
+  <div class="form-group has-feedback">
+    <div class="input-group">
+      <div class="input-group-addon">查询条件</div>
+      <input class="form-control has-success" type="text" placeholder="请输入查询条件">
+    </div>
+  </div>
+  <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+</form>
+<button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+<button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='form.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+<br>
+ <hr style="clear:both;">
+          <div class="table-responsive">
+            <table class="table  table-bordered">
+              <thead>
+                <tr >
+                  <th width="30">#</th>
+				  <th width="30"><input type="checkbox"></th>
+                  <th>名称</th>
+                  <th width="100">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+			  <tfoot>
+			     <tr >
+				     <td colspan="6" align="center">
+						<ul class="pagination">
+								<li class="disabled"><a href="#">上一页</a></li>
+								<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+								<li><a href="#">下一页</a></li>
+							 </ul>
+					 </td>
+				 </tr>
+
+			  </tfoot>
+            </table>
+          </div>
+			  </div>
+			</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="jquery/jquery-2.1.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="script/docs.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+            });
+            
+            $("tbody .btn-success").click(function(){
+                window.location.href = "assignPermission.html";
+            });
+            //获取信息生成显示的节点
+            function ajaxinit(data){
+				for(var i=0;i<data.length;i++){
+                    var $tr = $("<tr>" +
+                        "<td>" + data[i].roleid + "</td>" +
+                        "<td>" +
+                        "<input value="+data[i].roleid+" type='checkbox' name='check'/>" + "</td>" +
+                        "<td>" + data[i].rolename + "</td>" +
+                        "<td>"+
+                        " <button  type=\"button\" id=btn_success"+i+" onclick='btn_success(id)' value="+data[i].roleid+" class=\"btn btn-success btn-xs\"><i class=\" glyphicon glyphicon-check\"></i></button>"+
+                        "<button id=btn"+i+" onclick='edit(id)' value="+data[i].roleid+" type=\"button\" class=\"btn btn-primary btn-xs\"><i class=\" glyphicon glyphicon-pencil\"></i></button>"+
+                        "<button id=btn_remove"+i+" onclick='removeThis(id)' value="+data[i].roleid+" type=\"button\" class=\"btn btn-danger btn-xs\"><i class=\" glyphicon glyphicon-remove\"></i></button>"+
+                        "</td>"+
+                        "</tr>");
+                    var $table = $('table tbody');
+                    $table.append($tr);
+                }
+            }
+            function createpage(pages,pagenum){
+                //根据总页数和当前页数创建分页节点
+                //添加上一页
+                var first_a=document.createElement("a");
+                var first_text=document.createTextNode("上一页");
+                var first_li=document.createElement("li");
+                //如果是第一页，则设置为disabled状态
+                if(pagenum==1)first_li.setAttribute("class","disabled");
+                else {first_li.removeAttribute("class")}
+                first_a.appendChild(first_text);
+                first_li.appendChild(first_a);
+                document.getElementById("ul1").appendChild(first_li);
+
+                //添加中间的数字页
+                for(var j=1;j<=pages;j++){
+                    var a=document.createElement("a");
+                    var text=document.createTextNode(j);
+                    var li=document.createElement("li");
+                    a.appendChild(text);
+                    li.appendChild(a);
+                    if(j==1)li.setAttribute("class","active");
+                    document.getElementById("ul1").appendChild(li);
+                }
+
+                //添加下一页
+                var last_a=document.createElement("a");
+                var last_text=document.createTextNode("下一页");
+                var last_li=document.createElement("li");
+                if(pagenum==pages)last_li.setAttribute("class","disabled");
+                last_a.appendChild(last_text);
+                last_li.appendChild(last_a);
+                document.getElementById("ul1").appendChild(last_li);
+            }
+            function ajaxlast(page,anm){
+                $.ajax({
+                    url:"getUserAll?page="+page,
+                    success:function (data){
+                        ajaxinit(data)
+                        var pages=data.pages;
+                        //当前页数
+                        var pagenum=data.pageNum;
+                        //标签中的页数
+                        debugger;
+                        var con=anm.html();
+                        if(con==pagenum){
+                            anm.addClass("class","active");
+                        }
+                    },
+                    error:function (){
+                        alert("请求无效")
+                    }
+                })
+            }
+            $.ajax({
+                url:"getRoleAll",
+                success:function (data){
+                    ajaxinit(data);
+                    // //总页数
+                    // var pages=data.pages;
+                    // //当前页数
+                    // var pagenum=data.pageNum;
+                    // createpage(pages,pagenum)
+                    //添加监听
+                    // $("#ul1 a").each(function () {
+                    //     $(this).click(function (){
+                    //         //当前a标签的值
+                    //         var anm= $(this);
+                    //         //清空表格数据
+                    //         $("table tbody").html("");
+                    //         // $("#ul1 li").remove();
+                    //         //获取到点击分页的值.
+                    //         var page=$(this).text();
+                    //         ajaxlast(page,anm);
+                    //     });
+                    // });
+                },
+                error:function () {
+                    alert("请求无效")
+                }
+            });
+            //获取id
+            function btn_success(id) {
+                 var value=$("#"+id).val();
+                 location.href="assignPermission.html?id="+value;
+            }
+            //获取到要修改的id属性
+            function edit(id) {
+                var value=$("#"+id).val();
+                location.href="edit.html?id="+value;
+            }
+            //删除
+            function removeThis(id) {
+                var romve_id=$("#"+id).val();
+                $.ajax({
+                    type:"POST",
+                    url:"delone?id="+romve_id,
+                    success:function (data){
+                        if(data=="false")alert("请求失败");
+                        else {
+                            location.reload();
+                        }
+                    },
+                    error:function () {
+                        alert("请求无效")
+                    }
+                });
+            }
+        </script>
+	<script type="text/javascript">
+        $(function (){
+            count=0;
+            //全选和全不选(对全选check的监听)
+            $("#checkAll").click(function () {
+                //匹配input标签中name为check的元素，this.checked是跟着checkall走的
+                $("input[name=check]").prop("checked",this.checked);
+                //获取选中的个数
+                count= $("input[name=check]:checked").length;
+            });
+            var t= document.getElementsByName("check").length;
+            alert(t);
+            //遍历所有name为check的CheckBox（对所有name=check的CheckBox监听）
+            $("input[name=check]").each(function(){
+                //获取当前的对象监听
+                $(this).click(function(){
+                    //如果是选择状态则count++
+                    if($(this).prop("checked")){
+                        count++;
+                        //如果勾选次数为用户数量,则选中全选按钮
+                        if(count==$(":input[name=check]").length){
+                            $("#checkAll").prop("checked",true);
+                        }
+                    }else{
+                        count--;
+                        $("#checkAll").prop("checked",false);
+                    }
+                });
+            })
+        });
+        //对删除按钮的监听
+        $("#del").click(function (){
+            if(count==0){
+                alert("请至少选中一个");
+                return;
+            }
+            //创建一个数组
+            var id_array=new Array();
+            //遍历所有选中的复选框
+            $(":input[name=check]:checked").each(function (){
+                //将选中的复选框添加到数组中
+                id_array.push($(this).val());
+            });
+            $.ajax({
+                type:"POST",
+                url:"deleteBatch",
+                data:{"checkid":id_array},
+                success:function (data) {
+                    //刷新页面
+                    location.reload();
+                }
+            })
+        });
+	</script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.RoleInfoMapper">
+    <select id="getRole" parameterType="int" resultType="com.qf.dto.RoleInfoDto">
+          SELECT r.*,u.userid FROM
+          `user` u RIGHT JOIN  user_role ur ON u.userid=ur.userid
+           RIGHT JOIN  role r ON r.roleid=ur.roleid AND u.stuas=1
+            AND ur.stuas=1  AND u.userid=#{id}
+    </select>
+
+    <!--保存角色分配-->
+    <!--第一步：先设置全部删除掉（更改字段为0）-->
+    <update id="postRoleInfo" parameterType="com.qf.vo.RoleInfoVo">
+            update user_role set stuas=0 where userid=#{userid}
+    </update>
+
+    <!--第二步添加角色-->
+    <insert id="insertRole" parameterType="com.qf.vo.RoleInfoVo">
+        insert into user_role(userid,roleid)values
+        <foreach collection="roleid_array" item="roleid" open="" separator="," close="">
+             (#{userid},#{roleid})
+        </foreach>
+    </insert>
+
+    <!--查询所有角色-->
+    <select id="getAllRole" resultType="com.qf.Entity.role">
+        select *from role
+    </select>
+
+</mapper>

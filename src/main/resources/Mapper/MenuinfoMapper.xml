@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.mapper.MenuinfoMapper" >
+    <resultMap id="Menudto" type="com.qf.dto.MenuInfoDto">
+      <id column="menuid" property="id"></id>
+      <result column="menuname" property="name"></result>
+      <result column="menupath" property="url"></result>
+      <result column="menuicon" property="icon"></result>
+      <result column="parentid" property="pid"></result>
+        <result column="status" property="checked"></result>
+      <collection property="children" ofType="com.qf.dto.MenuInfoDto">
+        <id column="cid" property="id"></id>
+        <result column="cname" property="name"></result>
+        <result column="cpath" property="url"></result>
+        <result column="cicon" property="icon"></result>
+        <result column="cparentid" property="pid"></result>
+          <result column="checked" property="checked"></result>
+      </collection>
+    </resultMap>
+  <!--获取所有菜单-->
+  <select id="getAllMenu" resultMap="Menudto" parameterType="int">
+--     思路：
+--   1：首先将同一张表看成是两个表，利用条件 menuid=parentid获取父菜单下的所有子菜单，构建出树的模型。（必须给别名，否则字段名会冲突）
+--   2：因为查出来的表只是一张临时表，没有名字，数据库也不存在，所以给它个别名tab1，然后又拿tab1进行left join(左外连接，左边为主表保持完整的字段，从表只显示条件相等的值)role_menu,
+-- 使用条件role_menu rm ON rm.mid=tb1.menuid 将两张表关联起来，最后给出角色roleid就可以得到角色所对应的权限。
+SELECT tb1.*,rm.`status` checked FROM (SELECT m1.*,m2.menuid cid,m2.menuname cname,m2.menuicon cicon,m2.menupath cpath,
+    m2.parentid cparentid FROM menuinfo m1,menuinfo m2 where m1.menuid=m2.parentid)tb1
+     LEFT JOIN role_menu rm ON rm.mid=tb1.menuid where rm.roleid=#{id}
+  </select>
+
+  <!--查询中间表-->
+  <select id="getrole_menu" parameterType="int" resultType="com.qf.dto.Role_menuDto">
+    SELECT *from role_menu where roleid=#{id}
+  </select>
+
+    <!--修改中间表,设置状态为0，让其不显示-->
+    <update id="checkRole" parameterType="com.qf.vo.RoleMenuVo">
+        update role_menu set status=0 where roleid=#{roleid}
+    </update>
+    <!--插入菜单id-->
+    <insert id="Insertbymenuid" parameterType="com.qf.vo.RoleMenuVo">
+        insert into role_menu(mid,roleid)values
+        <foreach collection="menuid" item="mid" open="" separator="," close="">
+         (#{mid},#{roleid})
+        </foreach>
+    </insert>
+</mapper>
