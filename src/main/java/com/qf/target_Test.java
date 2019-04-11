@@ -45,7 +45,7 @@ public class target_Test{
         //隐藏的坑2：这里返回的结果list并不会直接打印，而是会输出分页信息，只能for循环遍历
         Page<User> users = PageHelper.startPage(1, 2);
 //        List<User>list = us.query();
-//        for (User u:list) {
+//        for (User u:list){
 //            System.out.println(u);
 //        }
     }
