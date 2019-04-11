@@ -63,5 +63,6 @@ public class target_Test{
         RoleService bean = context.getBean(RoleService.class);
         List<RoleInfoDto> role = bean.getRole(1);
         System.out.println(role);
+        System.out.println("githubTest");
     }
 }
