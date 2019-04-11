@@ -62,7 +62,5 @@ public class target_Test{
     public void fun5(){
         RoleService bean = context.getBean(RoleService.class);
         List<RoleInfoDto> role = bean.getRole(1);
-        System.out.println(role);
-        System.out.println(123123);
     }
 }
