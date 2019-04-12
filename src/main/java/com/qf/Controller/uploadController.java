@@ -21,6 +21,7 @@ public class uploadController {
      * 文件上传
      */
     @RequestMapping(value = "fileuploadTest",method = RequestMethod.POST)
+    //这里也可以使用接口MultipartFile作为参数，多态调用。
     public void fileuploadTest(@RequestParam(value ="file")CommonsMultipartFile commonsMultipartFile) throws IOException {
         //给一个时间戳，防止文件重名
         long time=System.currentTimeMillis();
